@@ -1,0 +1,5 @@
+.idea
+.env
+error.log
+info.log
+/node_modules
