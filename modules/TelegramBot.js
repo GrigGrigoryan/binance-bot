@@ -9,14 +9,7 @@ const initialButtons = [
     [{text: 'Set alert for pair by price'}],
     [{text: 'Show My Balance'}]
 ];
-const ClientsApis = {
-    '553262909': {
-        apiKeyInitInProgress: false,
-        apiKeyIsValid: true,
-        api_key: process.env.BINANCE_API_KEY,
-        secret: process.env.BINANCE_API_SECRET
-    }
-};
+const ClientsApis = {};
 
 //api key and secret initializing command handler
 bot.onText(/\/api_key (.+)/, async (msg, match) => {
@@ -33,7 +26,6 @@ bot.onText(/\/alert (.+)/, async (msg, match) => {
 });
 
 bot.on('message', async (msg) => {
-    console.log(msg);
     const {
         message_id,
         from: {id: user_id,is_bot,first_name,last_name,username,language_code},
@@ -268,8 +260,6 @@ const StreamFuturesMarkPricesByClient = async (msg, match) => {
 
         await bot.sendMessage(msg.from.id, `Okay, i will send you message, when ${symbol} will reach ${markPrice}`, buttonGenerator(msg, {keyboard: initialButtons}));
 
-
-        console.log(symbol);
         let oldPrice;
         // streaming mark price by symbol
         await client.futuresMarkPriceStream(symbol, async (data, err) => {
@@ -279,7 +269,6 @@ const StreamFuturesMarkPricesByClient = async (msg, match) => {
             if (!oldPrice) {
                 oldPrice = parseInt(data.markPrice);
             }
-            console.log(data.markPrice);
 
             if ((markPrice - parseInt(data.markPrice) < 0 && markPrice - oldPrice > 0) || (markPrice - parseInt(data.markPrice) > 0 && markPrice - oldPrice < 0)) {
                 oldPrice = parseInt(data.markPrice);
